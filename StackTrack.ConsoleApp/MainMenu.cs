@@ -1,3 +1,4 @@
+using Login;
 using StackTrack.ConsoleApp;
 namespace MainMenu;
 // TODO:
@@ -6,6 +7,7 @@ namespace MainMenu;
 class MainMenu
 {
     Program program = new Program();
+    Logins login = new Logins();
     public void MainMenuDisplay()
     {
         string? userInput;
@@ -27,7 +29,7 @@ class MainMenu
         switch (userSelection)
         {
             case 1: // Login
-
+                login.LoginMenu();
                 break;
             case 2: // Create new account
                 program.AccountCreation();
