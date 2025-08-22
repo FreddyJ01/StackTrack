@@ -1,16 +1,20 @@
-namespace MainMenu;
-
 using StackTrack.ConsoleApp;
+namespace MainMenu;
+// TODO:
+// 1. Make it look prettier
 
-public class MainMenu
+class MainMenu
 {
+    Program program = new Program();
     public void MainMenuDisplay()
     {
         string? userInput;
         int userChoice;
         do
         {
-            System.Console.WriteLine("1. Create New Account");
+            System.Console.WriteLine("======Main Menu======");
+            System.Console.WriteLine("1. Login");
+            System.Console.WriteLine("2. Create an Account");
             userInput = Console.ReadLine().ToLower().Trim();
             int.TryParse(userInput, out userChoice);
             MainMenuDisplayLogic(userChoice);
@@ -22,8 +26,11 @@ public class MainMenu
     {
         switch (userSelection)
         {
-            case 1: // Create new account
-                StackTrack.ConsoleApp.Program.AccountCreation();
+            case 1: // Login
+
+                break;
+            case 2: // Create new account
+                program.AccountCreation();
                 break;
         }
     }

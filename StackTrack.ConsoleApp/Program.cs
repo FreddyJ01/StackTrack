@@ -10,16 +10,26 @@ class Program
 {
     // Stores the users that are created in AccountCreation().
     List<User> users = new List<User>();
+    static MainMenu.MainMenu mainMenu = new MainMenu.MainMenu();
+
     static void Main(string[] Args)
     {
-        Program program = new Program();
-        MainMenu.MainMenuDisplay();
-        // program.AccountCreation();
-        // program.BookCheckout(0, "Diary of A Wimpy Kid");
-
-        // System.Console.WriteLine($"Welcome {program.users[0].userName}, your unique ID is {program.users[0].userID}");
-        // System.Console.WriteLine("You may now check out books!");
+        mainMenu.MainMenuDisplay();
+        
+        
     }
+
+
+    // void LoginMenu()
+    // {
+    //     string? userInput;
+    //     int userChoice;
+    //     do
+    //     {
+    //         System.Console.Write("Username: ");
+    //         Console.ReadLine();
+    //     } while (userInput != "exit");
+    // }
 
     // Take user input (Name) and Create an Instance of User (Name, ID)
     public void AccountCreation()
