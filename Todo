@@ -1,0 +1,17 @@
+- Fix Scope Issues
+- Finish The Main Menu Display so that you understand all functionality required
+- Main Menu
+    - TITLE
+    - 1. Login
+    - 2. Create New Account
+    - "Exit" To Exit
+- Login Screen
+    - Prompt for username
+    - Prompt for password (Handle Passwords)
+- Authorized User Screen (Screen Users Reach After Logging In)
+    - 1. Check Out Books (Takes you to screen that understands what generes your looking for and presents a list of your options)
+    - 2. Return Books
+    - 3. View Current Stack of Books
+    - 4. View Current Balance
+    - 5. View Terms & Conditions (Late Fees, Policies, ETC.)
+    - 6. Log Out (Takes you back to Main Menu)
