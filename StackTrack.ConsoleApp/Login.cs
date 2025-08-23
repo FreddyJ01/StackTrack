@@ -1,3 +1,4 @@
+using MainMenu;
 using StackTrack.ConsoleApp;
 using Users;
 
@@ -5,11 +6,12 @@ namespace Login;
 
 class Logins
 {
+    HomeScreen homeScreen = new HomeScreen();
     public void UserIdentification()
     {
         string? userInput;
         int userIndex = -1;
-
+        System.Console.WriteLine("======Login======");
         System.Console.Write("Username: ");
         userInput = Console.ReadLine();
         userIndex = Program.userDatabase.FindIndex(u => u.userName == userInput); // Finds the users index in userDatabase, if no user is found returns -1.
@@ -33,8 +35,10 @@ class Logins
         bool validPassword = Program.userDatabase[userIndex].userPassword == userInputPassword ? true : false; // Validates password
         if (validPassword)
         {
-            System.Console.WriteLine("Authorization Succesful!"); // replace this with a call to home page
-        } else
+            Console.Clear();
+            homeScreen.HomeScreenDisplay();
+        }
+        else
         {
             Console.Clear();
             System.Console.WriteLine("Authorization Failed - Try Again!");

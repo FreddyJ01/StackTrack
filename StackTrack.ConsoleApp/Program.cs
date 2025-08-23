@@ -20,6 +20,8 @@ class Program
     // Take user input (Name) and Create an Instance of User (Name, ID)
     public void AccountCreation()
     {
+        Console.Clear();
+        System.Console.WriteLine("======Account Creation======");
         System.Console.WriteLine("Name:");
         string name = Console.ReadLine();
         System.Console.WriteLine("Create a Password:");
