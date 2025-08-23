@@ -29,7 +29,7 @@ class MainMenu
         switch (userSelection)
         {
             case 1: // Login
-                login.LoginMenu();
+                login.UserIdentification();
                 break;
             case 2: // Create new account
                 program.AccountCreation();
