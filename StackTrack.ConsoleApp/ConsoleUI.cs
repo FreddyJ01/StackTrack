@@ -1,13 +1,10 @@
-using Login;
-using StackTrack.ConsoleApp;
-namespace MainMenu;
-// TODO:
-// 1. Make it look prettier
+using Accounts;
+namespace ConsoleUI;
 
 class MainMenu
 {
-    Program program = new Program();
-    Logins login = new Logins();
+    UserCreation userCreation = new UserCreation();
+    UserAuthentication userAuthentication = new UserAuthentication();
     public void MainMenuDisplay()
     {
         string? userInput;
@@ -29,12 +26,12 @@ class MainMenu
     {
         switch (userSelection)
         {
-            case 1: // Login
+            case 1: // User Authentication
                 Console.Clear();
-                login.UserIdentification();
+                userAuthentication.UserIdentification();
                 break;
-            case 2: // Create new account
-                program.AccountCreation();
+            case 2: // User Creation
+                userCreation.AccountCreation();
                 break;
         }
     }
