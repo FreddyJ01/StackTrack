@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "stacktrack.consoleapp", "consoleapp.csproj", "{CF48A029-1834-4753-A73F-D3E702F0464D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "consoleapp", "consoleapp.csproj", "{CF48A029-1834-4753-A73F-D3E702F0464D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

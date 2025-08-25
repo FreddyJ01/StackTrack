@@ -1,6 +1,0 @@
-namespace Books;
-
-class BookHandler
-{
-    
-}
