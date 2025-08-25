@@ -12,7 +12,7 @@ class Home
         {
             // 1. Interface Header
             Console.Clear();
-            System.Console.WriteLine("======Main Menu======");
+            System.Console.WriteLine("==Home==");
 
             // 2. Display user options
             System.Console.WriteLine("1. Login");
