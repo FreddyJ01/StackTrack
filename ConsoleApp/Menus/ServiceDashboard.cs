@@ -1,3 +1,5 @@
+using StackTrack.ConsoleApp.AppServices;
+
 namespace StackTrack.ConsoleApp.Menus;
 
 class ServiceDashboard
@@ -10,7 +12,8 @@ class ServiceDashboard
         do
         {
             // 1. Interface Header
-            System.Console.WriteLine("==Home Screen==");
+            Console.Clear();
+            System.Console.WriteLine("==Service Dashboard==");
 
             // 2. Display user options
             System.Console.WriteLine("1. Check Out Books");
@@ -36,10 +39,15 @@ class ServiceDashboard
         switch (userSelection)
         {
             case 1:
+                Console.Clear();
+                // 1. Take users to bookcheckout service
+                BookCheckout.PrintBookInventory();
                 break;
             case 2:
                 break;
             case 3:
+                // 3. Takes user to printuserstack service
+                ViewStack.PrintUserStack();
                 break;
             case 4:
                 break;
