@@ -41,9 +41,11 @@ class ServiceDashboard
             case 1:
                 Console.Clear();
                 // 1. Take users to bookcheckout service
-                BookCheckout.PrintBookInventory();
+                BookCheckout.BookCheckoutInterface();
                 break;
             case 2:
+                // 2. Takes users to bookreturn service
+                BookReturn.BookReturnInterface();
                 break;
             case 3:
                 // 3. Takes user to printuserstack service

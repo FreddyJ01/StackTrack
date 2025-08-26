@@ -8,9 +8,10 @@ class BookCheckout
 {
     // Variables used to recieve user book selection
     public static string? userBookSelection;
+    public static bool exitStatement;
     public static int userBookSelectionIndex;
 
-    public static void PrintBookInventory()
+    public static void BookCheckoutInterface()
     {
         // 1. Interface Header
         System.Console.WriteLine("Available Books:");
@@ -24,20 +25,18 @@ class BookCheckout
         // 3. Console Formatting
         System.Console.WriteLine("--");
 
-        //4. Takes user to the checkout interface
-        BookCheckoutInterface();
-    }
+        // 4. Prompt user to select a book to checkout
+        System.Console.WriteLine("Select a Book:");
 
-    public static void BookCheckoutInterface()
-    {
-            // 1. Prompt user to select a book to checkout
-            System.Console.WriteLine("Select a Book:");
+        // 5. Takes user selection
+        userBookSelection = Console.ReadLine();
 
-            // 2. Takes user selection
-            userBookSelection = Console.ReadLine();
+        // 6. Allows user to exit interface
+        exitStatement = userBookSelection.ToLower().Trim() == "exit";
+        if (exitStatement) { return; }
 
-            // 3. Passes user selection to BookCheckoutLogic
-            BookCheckoutLogic(userBookSelection);
+        // 7. Passes user selection to BookCheckoutLogic
+        BookCheckoutLogic(userBookSelection);
     }
 
     public static void BookCheckoutLogic(string userBookSelection)
@@ -52,8 +51,8 @@ class BookCheckout
             Console.Clear();
             System.Console.WriteLine("Sorry, That Book is Currently Unavailable.\n");
 
-            // Recursion back to PrintBookInventory
-            PrintBookInventory();
+            // Recursion back to BookCheckoutInterface
+            BookCheckoutInterface();
         }
         //  Handles if the user already checked out that book
         else if (UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack.ContainsKey(LibraryInventory.bookInventory[userBookSelectionIndex]))
@@ -64,7 +63,7 @@ class BookCheckout
             System.Console.WriteLine($"You already checked this book out on {UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack[LibraryInventory.bookInventory[userBookSelectionIndex]]}\n");
 
             // Redirect the user back to print book inventory
-            PrintBookInventory();
+            BookCheckoutInterface();
 
         }
         // Adds the book to the users book stack
