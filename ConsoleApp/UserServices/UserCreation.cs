@@ -1,5 +1,5 @@
 using StackTrack.ConsoleApp.Models;
-namespace StackTrack.ConsoleApp.Services;
+namespace StackTrack.ConsoleApp.UserServices;
 
 public class UserCreation
 {

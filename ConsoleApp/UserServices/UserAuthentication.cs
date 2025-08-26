@@ -1,6 +1,6 @@
 using StackTrack.ConsoleApp.Menus;
 
-namespace StackTrack.ConsoleApp.Services;
+namespace StackTrack.ConsoleApp.UserServices;
 
 public class UserAuthentication
 {
@@ -9,6 +9,9 @@ public class UserAuthentication
 
     // Authentication Logic Variable
     public static bool validPassword;
+
+    // Variable to hold the userIndex of the currently logged in user for accessing that users data during their session.
+    public static int currentUserIndex;
 
     public static void AuthenticationInterface(int userIndex)
     {
@@ -28,9 +31,12 @@ public class UserAuthentication
         // 2. Handles true/false password | True -> Directs to HomeScreen | False -> Informs user that authentication has failed and redirects them to the Identification Interface
         if (validPassword)
         {
+            // Stores current users index for thier session
+            currentUserIndex = userIndex;
+
+            // Take User To ServiceDashboard
             Console.Clear();
             ServiceDashboard.ServiceDashboardDisplay();
-            // Take user to service dashboard
         }
         else
         {

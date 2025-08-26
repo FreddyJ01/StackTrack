@@ -1,4 +1,4 @@
-namespace StackTrack.ConsoleApp.Services;
+namespace StackTrack.ConsoleApp.UserServices;
 
 class UserIdentification
 {
