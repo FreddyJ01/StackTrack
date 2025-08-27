@@ -4,7 +4,6 @@ namespace StackTrack.ConsoleApp.Menus;
 
 class ServiceDashboard
 {
-    public static string? userInput;
     public static int userSelection;
 
     public static void ServiceDashboardDisplay()
@@ -12,26 +11,25 @@ class ServiceDashboard
         do
         {
             // 1. Interface Header
-            Console.Clear();
             System.Console.WriteLine("==Service Dashboard==");
 
             // 2. Display user options
-            System.Console.WriteLine("1. Check Out Books");
-            System.Console.WriteLine("2. Return Books");
-            System.Console.WriteLine("3. View Current Stack of Books");
-            System.Console.WriteLine("4. View Current Balance");
-            System.Console.WriteLine("5. View Terms and Conditions");
+            System.Console.WriteLine("1. Book Checkout");
+            System.Console.WriteLine("2. Book Return");
+            System.Console.WriteLine("3. My Stack");
+            System.Console.WriteLine("4. My Balance");
+            System.Console.WriteLine("5. Terms and Conditions");
             System.Console.WriteLine("6. Exit");
+            System.Console.WriteLine("--");
+            System.Console.Write("Selection > ");
 
-            // 3. Take user input, trim it, and put it in lower case
-            userInput = Console.ReadLine().ToLower().Trim();
+            // 3. Take user input, parse for selection
+            int.TryParse(Console.ReadLine(), out userSelection);
 
-            // 4. Parse user input for a number choice and store it in userSelection
-            int.TryParse(userInput, out userSelection);
-
-            // 5. Pass userSelection into ServiceDashBoardLogic to route the user
+            // 4. Pass userSelection into ServiceDashBoardLogic to route the user
             ServiceDashboardLogic(userSelection);
-        } while (userInput != "exit");
+        }
+        while (userSelection != 6);
     }
 
     public static void ServiceDashboardLogic(int userSelection)
@@ -40,23 +38,32 @@ class ServiceDashboard
         {
             case 1:
                 Console.Clear();
-                // 1. Take users to bookcheckout service
                 BookCheckout.BookCheckoutInterface();
                 break;
             case 2:
-                // 2. Takes users to bookreturn service
+                Console.Clear();
                 BookReturn.BookReturnInterface();
                 break;
             case 3:
-                // 3. Takes user to printuserstack service
+                Console.Clear();
                 ViewStack.PrintUserStack();
                 break;
             case 4:
+                Console.Clear();
+                BalanceView.BalanceViewInterface();
                 break;
             case 5:
+                Console.Clear();
+                TermsConditions.TermsConditionsDisplay();
                 break;
             case 6:
-                break;
+                Console.Clear();
+                System.Console.WriteLine("> Logged Out\n");
+                return;
+            default:
+                Console.Clear();
+                System.Console.WriteLine("> Invalid Selection\n");
+                return;
         }
     }
 }

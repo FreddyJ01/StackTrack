@@ -42,8 +42,8 @@ public class UserAuthentication
         {
             // Inform user that password attempt has failed
             Console.Clear();
-            System.Console.WriteLine("Authentication Failed");
-            UserIdentification.IdentificationInterface();
+            System.Console.WriteLine("> Log In Failed - Invalid Password\n");
+            return;
         }
     }
 }

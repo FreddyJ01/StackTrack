@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyModel;
 using StackTrack.ConsoleApp.Menus;
 using StackTrack.ConsoleApp.Models;
 using StackTrack.ConsoleApp.UserServices;
@@ -26,14 +27,10 @@ class BookCheckout
         System.Console.WriteLine("--");
 
         // 4. Prompt user to select a book to checkout
-        System.Console.WriteLine("Select a Book:");
+        System.Console.Write("Book Selection > ");
 
         // 5. Takes user selection
         userBookSelection = Console.ReadLine();
-
-        // 6. Allows user to exit interface
-        exitStatement = userBookSelection.ToLower().Trim() == "exit";
-        if (exitStatement) { return; }
 
         // 7. Passes user selection to BookCheckoutLogic
         BookCheckoutLogic(userBookSelection);
@@ -49,10 +46,8 @@ class BookCheckout
         {
             // Alert the User that Book is Unavailable
             Console.Clear();
-            System.Console.WriteLine("Sorry, That Book is Currently Unavailable.\n");
-
-            // Recursion back to BookCheckoutInterface
-            BookCheckoutInterface();
+            System.Console.WriteLine("> Invalid Book Selection\n");
+            return;
         }
         //  Handles if the user already checked out that book
         else if (UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack.ContainsKey(LibraryInventory.bookInventory[userBookSelectionIndex]))
@@ -60,20 +55,22 @@ class BookCheckout
             Console.Clear();
 
             // Prompt the user that they already have that book checked out and when they checked it out
-            System.Console.WriteLine($"You already checked this book out on {UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack[LibraryInventory.bookInventory[userBookSelectionIndex]]}\n");
-
-            // Redirect the user back to print book inventory
-            BookCheckoutInterface();
+            System.Console.WriteLine($"> You already checked out {userBookSelection} on {UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack[LibraryInventory.bookInventory[userBookSelectionIndex]]}\n");
+            return;
 
         }
         // Adds the book to the users book stack
         else
         {
-            // Adds the book that the user selected to the current logged in users book stack alongside the checkout time. Then returns user to the Service Dashboard
+            // Adds the book to the users booklist
             UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack.Add(LibraryInventory.bookInventory[userBookSelectionIndex], DateTime.Now);
 
-            // Shows the user their current stack
-            ViewStack.PrintUserStack();
+            // Alerts the user that the checkout was successful
+            Console.Clear();
+            System.Console.WriteLine($"> Successfully Checked Out {LibraryInventory.bookInventory[userBookSelectionIndex]} at {UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack[userBookSelection]}\n");
+
+            // Returns user to service dashboard
+            return;
         }
     }
 }

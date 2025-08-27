@@ -14,19 +14,22 @@ class BookReturn
 
     public static void BookReturnInterface()
     {
-        // 1. Show the user their current stack
-        ViewStack.PrintUserStack();
+        // 1. Create a temporary variable for holding the users book stack
+        var userStack = UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack;
 
-        // 2. Console Formatting
-        System.Console.WriteLine("Which book would you like to return?");
+        // 2. Display current stack to user
+        System.Console.WriteLine("Current User Stack:");
+        foreach (var pair in userStack)
+        {
+            System.Console.WriteLine($"{pair.Key}, {pair.Value}");
+        }
+
+        // 3. Prompt the user which book they would like to return
         System.Console.WriteLine("--");
+        System.Console.Write("Return Selection > ");
 
-        // 3. Take user input
+        // 4. Take user input
         userBookSelection = Console.ReadLine();
-
-        // 4. Allows user to exit interface
-        exitStatement = userBookSelection.ToLower().Trim() == "exit";
-        if (exitStatement) { return; }
 
         // 5. Passes user selection to BookReturnLogic
         BookReturnLogic(userBookSelection);
@@ -39,7 +42,11 @@ class BookReturn
 
         // 2. Alert the user they have not checked out the book if the book is not in their stack
         if (!bookInUserStack)
-            System.Console.WriteLine($"You don't have {userBookSelection} checked out.");
+        {
+            Console.Clear();
+            System.Console.WriteLine($"> Return Failed - Invalid Selection\n");
+            return;
+        }
 
         // 3. Determine how long the user had the book checked out for to handle any late fees (10 Seconds For Demo)
 
@@ -50,37 +57,34 @@ class BookReturn
         userPosession = DateTime.Now - whenUserCheckedOut;
 
         // Handles Late Fees (10 Seconds)
-        if (userPosession.Seconds >= 10)
+        if (userPosession.TotalSeconds >= 10)
         {
+            // Adds userBalance Total
+            UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBalance += (userPosession.TotalSeconds - 10) * 10;
+
             // Informs user they have had the book too long
-            System.Console.WriteLine($"You had this book for {userPosession.Seconds - 10} seconds longer than you should have.");
+            Console.Clear();
 
-            // Adds to user balance total
-            UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBalance += (userPosession.Seconds - 10) * 10;
-
-            // Informs user how much they accrued in late fees on this book and their new total balance
-            System.Console.WriteLine($"\nAt $10 a second your total accrued balance on this book is ${(userPosession.Seconds - 10) * 10}, bringing your total balance to ${UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBalance}");
+            System.Console.WriteLine($"> You Had \"{userBookSelection}\" For {(userPosession.TotalSeconds - 10):f0} Seconds Past Your Return Time.");
+            System.Console.WriteLine($"> Accrued Balance On \"{userBookSelection}\": ${((userPosession.TotalSeconds - 10) * 10):f2}");
+            System.Console.WriteLine($"> Total Balance: ${(UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBalance):f2}\n");
 
             // Removes the book from the users stack
             UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack.Remove(userBookSelection);
 
-            // Waits for user to ackowledge message
-            Console.ReadLine();
+            // Returns user to ServiceDashboard
+            return;
         }
         else
         {
             // Thanks the user for returning the book on time
-            System.Console.WriteLine($"Thank you for returning {userBookSelection} on time, have a great day!");
+            Console.Clear();
+            System.Console.WriteLine($"> Return Succesful - {userBookSelection} returned on time.\n");
 
             // Removes the book from the users stack
             UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack.Remove(userBookSelection);
 
-            // Waits for user to ackowledge message
-            Console.ReadLine();
+            return;
         }
-
-        // 4. Remove the book from the users stack
-
-        // 5. End this logic
     }
 }
