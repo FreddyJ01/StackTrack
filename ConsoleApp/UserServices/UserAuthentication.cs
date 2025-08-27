@@ -1,37 +1,31 @@
 using StackTrack.ConsoleApp.Menus;
-
 namespace StackTrack.ConsoleApp.UserServices;
 
 public class UserAuthentication
 {
-    // Authentication Interface Variable
     public static string? passwordAttempt;
-
-    // Authentication Logic Variable
     public static bool validPassword;
-
-    // Variable to hold the userIndex of the currently logged in user for accessing that users data during their session.
     public static int currentUserIndex;
 
     public static void AuthenticationInterface(int userIndex)
     {
-        // 1. Prompt user for password
+        // 1. Prompts user for a passwordAttempt
         System.Console.Write("Password: ");
         passwordAttempt = Console.ReadLine();
 
-        // 2. Passes the password into the Authentication Logic
+        // 2. Passes the passwordAttempt and userIndex into the AuthenticationLogic
         AuthenticationLogic(passwordAttempt, userIndex);
     }
 
     public static void AuthenticationLogic(string passwordAttempt, int userIndex)
     {
-        // 1. Compares provided password to the password stored for given user in the userDatabase
-        validPassword = UserCreation.userDatabase[userIndex].userPassword == passwordAttempt ? true : false; // Validates password
+        // 1. Compares provided passwordAttempt to the password stored for given userIndex in the userDatabase
+        validPassword = UserCreation.userDatabase[userIndex].userPassword == passwordAttempt ? true : false;
 
         // 2. Handles true/false password | True -> Directs to HomeScreen | False -> Informs user that authentication has failed and redirects them to the Identification Interface
         if (validPassword)
         {
-            // Stores current users index for thier session
+            // Stores current users index for their session
             currentUserIndex = userIndex;
 
             // Take User To ServiceDashboard

@@ -1,5 +1,4 @@
 using StackTrack.ConsoleApp.UserServices;
-
 namespace StackTrack.ConsoleApp.AppServices;
 
 class ViewStack
