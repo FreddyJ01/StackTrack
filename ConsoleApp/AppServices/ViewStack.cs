@@ -1,19 +1,19 @@
-using StackTrack.ConsoleApp.UserServices;
+// using StackTrack.ConsoleApp.UserServices;
 namespace StackTrack.ConsoleApp.AppServices;
 
 class ViewStack
 {
     public static void PrintUserStack()
     {
-        var userStack = UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack;
+        // var userStack = UserCreation.userDatabase[0].userBookStack;
 
         // 1. Interface Header
         System.Console.WriteLine("Current User Stack:");
 
         // 2. Prints all books in current users book stack
-        foreach (var pair in userStack)
+        // foreach (var pair in userStack)
         {
-            System.Console.WriteLine($"{pair.Key}, {pair.Value}");
+            // System.Console.WriteLine($"{pair.Key}, {pair.Value}");
         }
 
         // 3. Allows user to decide to make a return

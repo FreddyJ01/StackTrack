@@ -1,5 +1,3 @@
-using StackTrack.ConsoleApp.UserServices;
-
 namespace StackTrack.ConsoleApp.AppServices;
 
 class BalanceView
@@ -11,7 +9,7 @@ class BalanceView
     public static void BalanceViewInterface()
     {
         // 1. Display the users current balance to them
-        System.Console.WriteLine($"Current User Balance: \n${(UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBalance):f2}");
+        // System.Console.WriteLine($"Current User Balance: \n${(UserCreation.userDatabase[0].userBalance):f2}");
 
         // 2. Asks the user if they would like to make a payment
         System.Console.WriteLine("\nWould you like to make a payment?");
@@ -44,7 +42,7 @@ class BalanceView
     public static void BalancePay()
     {
         // Ask the user how much they would like to pay
-        System.Console.WriteLine($"Current Total Balance: \n${UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBalance}");
+        // System.Console.WriteLine($"Current Total Balance: \n${UserCreation.userDatabase[0].userBalance}");
 
         System.Console.WriteLine("\nHow much would you like to pay:");
         System.Console.WriteLine("--");
@@ -60,7 +58,7 @@ class BalanceView
             return;
         }
 
-        if (userPayment > UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBalance)
+        // if (userPayment > UserCreation.userDatabase[0].userBalance)
         {
             Console.Clear();
             System.Console.WriteLine("> Payment Failed - Payment Exceeds Current Balance\n");
@@ -68,14 +66,14 @@ class BalanceView
         }
 
         // Subtract their input from their balance
-        UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBalance -= userPayment;
+        // UserCreation.userDatabase[0].userBalance -= userPayment;
 
         Console.Clear();
 
         // Display the users new balance and thank them for their payment.
         System.Console.WriteLine($"> Payment Of ${userPayment} Was Successful");
 
-        System.Console.WriteLine($"> New Current Balance: ${UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBalance}\n");
+        // System.Console.WriteLine($"> New Current Balance: ${UserCreation.userDatabase[0].userBalance}\n");
 
         // return user to servicedashboard
         return;

@@ -1,33 +1,26 @@
+using System.Security.Cryptography.X509Certificates;
 using StackTrack.ConsoleApp.AppServices;
 
 namespace StackTrack.ConsoleApp.Menus;
 
 class ServiceDashboard
 {
-    public static int userSelection;
-
-    public static void ServiceDashboardDisplay()
+    public static void Interface()
     {
+        int userSelection;
         do
         {
-            // 1. Interface Header
             System.Console.WriteLine("==Service Dashboard==");
-
-            // 2. Display user options
             System.Console.WriteLine("1. Book Checkout");
             System.Console.WriteLine("2. Book Return");
             System.Console.WriteLine("3. My Stack");
             System.Console.WriteLine("4. My Balance");
             System.Console.WriteLine("5. Terms and Conditions");
-            System.Console.WriteLine("6. Exit");
+            System.Console.WriteLine("6. Log Out");
             System.Console.WriteLine("--");
             System.Console.Write("Selection > ");
 
-            // 3. Take user input, parse for selection
-            int.TryParse(Console.ReadLine(), out userSelection);
-
-            // 4. Pass userSelection into ServiceDashBoardLogic to route the user
-            ServiceDashboardLogic(userSelection);
+            ServiceDashboardLogic(int.TryParse(Console.ReadLine(), out userSelection) ? userSelection : 0);
         }
         while (userSelection != 6);
     }
@@ -38,7 +31,7 @@ class ServiceDashboard
         {
             case 1:
                 Console.Clear();
-                BookCheckout.BookCheckoutInterface();
+                BookCheckout.Interface();
                 break;
             case 2:
                 Console.Clear();

@@ -1,76 +1,85 @@
-using Microsoft.Extensions.DependencyModel;
-using StackTrack.ConsoleApp.Menus;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.Data.Sqlite;
+using StackTrack.ConsoleApp.AccountServices;
+using StackTrack.ConsoleApp.Data;
 using StackTrack.ConsoleApp.Models;
-using StackTrack.ConsoleApp.UserServices;
-
 namespace StackTrack.ConsoleApp.AppServices;
 
 class BookCheckout
 {
-    // Variables used to recieve user book selection
-    public static string? userBookSelection;
-    public static bool exitStatement;
-    public static int userBookSelectionIndex;
-
-    public static void BookCheckoutInterface()
+    public static void Interface()
     {
-        // 1. Interface Header
-        System.Console.WriteLine("Available Books:");
-
-        // 2. Print all available books
-        foreach (string book in LibraryInventory.bookInventory)
-        {
-            Console.WriteLine(book);
-        }
-
-        // 3. Console Formatting
+        System.Console.WriteLine("==Book Checkout==");
+        System.Console.WriteLine("1. All Books");
+        System.Console.WriteLine("2. Filter By Genre");
+        System.Console.WriteLine("3. Filter By Author");
         System.Console.WriteLine("--");
+        System.Console.Write("Selection > ");
 
-        // 4. Prompt user to select a book to checkout
-        System.Console.Write("Book Selection > ");
-
-        // 5. Takes user selection
-        userBookSelection = Console.ReadLine();
-
-        // 7. Passes user selection to BookCheckoutLogic
-        BookCheckoutLogic(userBookSelection);
+        BookCheckoutLogic(int.TryParse(Console.ReadLine(), out int tryParse) ? tryParse : 0);
     }
 
-    public static void BookCheckoutLogic(string userBookSelection)
+    public static void BookCheckoutLogic(int userSelection)
     {
-        // 1. Find the book in the array to ensure the selection is valid
-        userBookSelectionIndex = Array.IndexOf(LibraryInventory.bookInventory, userBookSelection);
-
-        // 2. Checks the book out to the user and logs the time if the book exists | Alerts the user that the book does not exist and takes them back to PrintBookInventory if the book doesn't exist
-        if (userBookSelectionIndex == -1)
+        switch (userSelection)
         {
-            // Alert the User that Book is Unavailable
-            Console.Clear();
-            System.Console.WriteLine("> Invalid Book Selection\n");
-            return;
+            case 1:
+                DisplayAllBooks();
+                break;
+            case 2:
+                Console.Clear();
+                System.Console.WriteLine("==Book Checkout==");
+                System.Console.Write("Genre: ");
+                BookData.QueryBooksByGenre(Console.ReadLine()?.ToString().ToLower().Trim() ?? "");
+                break;
+            case 3:
+                Console.Clear();
+                System.Console.WriteLine("==Book Checkout==");
+                System.Console.Write("Author: ");
+                BookData.QueryBooksByAuthor(Console.ReadLine()?.ToString().ToLower().Trim() ?? "");
+                break;
+            default:
+                Console.Clear();
+                System.Console.WriteLine("> Invalid Selection\n");
+                return;
         }
-        //  Handles if the user already checked out that book
-        else if (UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack.ContainsKey(LibraryInventory.bookInventory[userBookSelectionIndex]))
+    }
+
+    public static void DisplayAllBooks()
+    {
+        List<Book> books = BookData.QueryAllBooks();
+
+        Console.Clear();
+        System.Console.WriteLine("All Books:");
+        foreach (var book in books)
         {
-            Console.Clear();
+            string output = $"> {book.BookTitle}, By {book.BookAuthor}";
 
-            // Prompt the user that they already have that book checked out and when they checked it out
-            System.Console.WriteLine($"> You already checked out {userBookSelection} on {UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack[LibraryInventory.bookInventory[userBookSelectionIndex]]}\n");
-            return;
+            if (!String.IsNullOrEmpty(book.CheckedOutByID))
+            {
+                output += $" | {UserData.QueryUsernameById(book.CheckedOutByID)}, {book.CheckedOutAt:MMM-dd-yyyy @ hh:mm tt}";
+            }
 
+            System.Console.WriteLine(output);
         }
-        // Adds the book to the users book stack
-        else
+        System.Console.WriteLine("--");
+        System.Console.WriteLine("Selection > ");
+        var result = BookData.TryCheckoutBook(Console.ReadLine() ?? "");
+
+        switch (result)
         {
-            // Adds the book to the users booklist
-            UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack.Add(LibraryInventory.bookInventory[userBookSelectionIndex], DateTime.Now);
-
-            // Alerts the user that the checkout was successful
-            Console.Clear();
-            System.Console.WriteLine($"> Successfully Checked Out {LibraryInventory.bookInventory[userBookSelectionIndex]} at {UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack[userBookSelection]}\n");
-
-            // Returns user to service dashboard
-            return;
+            case BookData.CheckoutResult.Success:
+                Console.Clear();
+                System.Console.WriteLine("> Book Successfully Checked Out!\n");
+                break;
+            case BookData.CheckoutResult.NotFound:
+                Console.Clear();
+                System.Console.WriteLine("> Invalid Selection.\n");
+                break;
+            case BookData.CheckoutResult.AlreadyCheckedOut:
+                Console.Clear();
+                System.Console.WriteLine("> This Book Is Already Checked Out.\n");
+                break;
         }
     }
 }
