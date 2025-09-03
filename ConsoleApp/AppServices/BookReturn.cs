@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.VisualBasic;
-using StackTrack.ConsoleApp.UserServices;
+// using StackTrack.ConsoleApp.UserServices;
 
 namespace StackTrack.ConsoleApp.AppServices;
 
@@ -15,13 +15,13 @@ class BookReturn
     public static void BookReturnInterface()
     {
         // 1. Create a temporary variable for holding the users book stack
-        var userStack = UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack;
+        // var userStack = UserCreation.userDatabase[0].userBookStack;
 
         // 2. Display current stack to user
         System.Console.WriteLine("Current User Stack:");
-        foreach (var pair in userStack)
+        // foreach (var pair in userStack)
         {
-            System.Console.WriteLine($"{pair.Key}, {pair.Value}");
+            // System.Console.WriteLine($"{pair.Key}, {pair.Value}");
         }
 
         // 3. Prompt the user which book they would like to return
@@ -38,7 +38,7 @@ class BookReturn
     public static void BookReturnLogic(string userBookSelection)
     {
         // 1. Ensure the selected book is in the current users stack
-        bookInUserStack = UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack.ContainsKey(userBookSelection);
+        // bookInUserStack = UserCreation.userDatabase[0].userBookStack.ContainsKey(userBookSelection);
 
         // 2. Alert the user they have not checked out the book if the book is not in their stack
         if (!bookInUserStack)
@@ -51,7 +51,7 @@ class BookReturn
         // 3. Determine how long the user had the book checked out for to handle any late fees (10 Seconds For Demo)
 
         // Pulls the time the user checked the book out
-        whenUserCheckedOut = UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack[userBookSelection];
+        // whenUserCheckedOut = UserCreation.userDatabase[0].userBookStack[userBookSelection];
 
         // Determines how long the user had the book checked out
         userPosession = DateTime.Now - whenUserCheckedOut;
@@ -60,17 +60,17 @@ class BookReturn
         if (userPosession.TotalSeconds >= 10)
         {
             // Adds userBalance Total
-            UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBalance += (userPosession.TotalSeconds - 10) * 10;
+            // UserCreation.userDatabase[0].userBalance += (userPosession.TotalSeconds - 10) * 10;
 
             // Informs user they have had the book too long
             Console.Clear();
 
             System.Console.WriteLine($"> You Had \"{userBookSelection}\" For {(userPosession.TotalSeconds - 10):f0} Seconds Past Your Return Time.");
             System.Console.WriteLine($"> Accrued Balance On \"{userBookSelection}\": ${((userPosession.TotalSeconds - 10) * 10):f2}");
-            System.Console.WriteLine($"> Total Balance: ${(UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBalance):f2}\n");
+            // System.Console.WriteLine($"> Total Balance: ${(UserCreation.userDatabase[0].userBalance):f2}\n");
 
             // Removes the book from the users stack
-            UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack.Remove(userBookSelection);
+            // UserCreation.userDatabase[0].userBookStack.Remove(userBookSelection);
 
             // Returns user to ServiceDashboard
             return;
@@ -82,7 +82,7 @@ class BookReturn
             System.Console.WriteLine($"> Return Succesful - {userBookSelection} returned on time.\n");
 
             // Removes the book from the users stack
-            UserCreation.userDatabase[UserAuthentication.currentUserIndex].userBookStack.Remove(userBookSelection);
+            // UserCreation.userDatabase[0].userBookStack.Remove(userBookSelection);
 
             return;
         }

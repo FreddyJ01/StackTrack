@@ -1,6 +1,6 @@
 namespace StackTrack.ConsoleApp.Models;
 
-public class Users
+public class User
 {
     public string userName { get; set; }
     public string userPassword { get; set; }

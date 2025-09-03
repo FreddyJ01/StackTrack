@@ -1,13 +1,15 @@
-﻿using StackTrack.ConsoleApp.Menus;
+﻿using StackTrack.ConsoleApp.Data;
+using StackTrack.ConsoleApp.Menus;
 
 namespace Program;
 
-class Program
+public class Program
 {
     static void Main(string[] Args)
     {
-        Console.Clear();
-        Home.HomeDisplay();
+        DatabaseHelper.PushStart();
+        Home.Interface();
+        
         Console.Clear();
         System.Console.WriteLine("> Application Closed");
     }
