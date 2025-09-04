@@ -1,4 +1,3 @@
-using Microsoft.Data.Sqlite;
 using StackTrack.ConsoleApp.Data;
 namespace StackTrack.ConsoleApp.AccountServices;
 

@@ -1,6 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using Microsoft.Data.Sqlite;
-using StackTrack.ConsoleApp.AccountServices;
 using StackTrack.ConsoleApp.Data;
 using StackTrack.ConsoleApp.Models;
 namespace StackTrack.ConsoleApp.AppServices;
@@ -24,19 +21,13 @@ class BookCheckout
         switch (userSelection)
         {
             case 1:
-                DisplayAllBooks();
+                AllBooks();
                 break;
             case 2:
-                Console.Clear();
-                System.Console.WriteLine("==Book Checkout==");
-                System.Console.Write("Genre: ");
-                BookData.QueryBooksByGenre(Console.ReadLine()?.ToString().ToLower().Trim() ?? "");
+                BooksByGenre();
                 break;
             case 3:
-                Console.Clear();
-                System.Console.WriteLine("==Book Checkout==");
-                System.Console.Write("Author: ");
-                BookData.QueryBooksByAuthor(Console.ReadLine()?.ToString().ToLower().Trim() ?? "");
+                BooksByAuthor();
                 break;
             default:
                 Console.Clear();
@@ -45,12 +36,51 @@ class BookCheckout
         }
     }
 
-    public static void DisplayAllBooks()
+    public static void AllBooks()
     {
         List<Book> books = BookData.QueryAllBooks();
 
         Console.Clear();
         System.Console.WriteLine("All Books:");
+        BookDisplay(books);
+
+        CheckoutResult(BookData.TryCheckoutBook(Console.ReadLine() ?? string.Empty));
+    }
+
+    public static void BooksByGenre()
+    {
+        Console.Clear();
+        System.Console.WriteLine("==Book Checkout==");
+        System.Console.Write("Genre: ");
+        string genre = Console.ReadLine()?.ToString().ToLower().Trim() ?? "";
+
+        List<Book> books = BookData.QueryBooksByGenre(genre);
+
+        Console.Clear();
+        System.Console.WriteLine($"{char.ToUpper(genre[0]) + genre.Substring(1)} Books:");
+        BookDisplay(books);
+
+        CheckoutResult(BookData.TryCheckoutBook(Console.ReadLine() ?? string.Empty));
+    }
+
+    public static void BooksByAuthor()
+    {
+        Console.Clear();
+        System.Console.WriteLine("==Book Checkout==");
+        System.Console.Write("Author: ");
+        string author = Console.ReadLine()?.ToString().ToLower().Trim() ?? "";
+
+        List<Book> books = BookData.QueryBooksByAuthor(author);
+
+        Console.Clear();
+        System.Console.WriteLine($"Books By {char.ToUpper(author[0]) + author.Substring(1)}:");
+        BookDisplay(books);
+
+        CheckoutResult(BookData.TryCheckoutBook(Console.ReadLine() ?? string.Empty));
+    }
+
+    public static void BookDisplay(List<Book> books)
+    {
         foreach (var book in books)
         {
             string output = $"> {book.BookTitle}, By {book.BookAuthor}";
@@ -63,9 +93,11 @@ class BookCheckout
             System.Console.WriteLine(output);
         }
         System.Console.WriteLine("--");
-        System.Console.WriteLine("Selection > ");
-        var result = BookData.TryCheckoutBook(Console.ReadLine() ?? "");
+        System.Console.Write("Selection > ");
+    }
 
+    public static void CheckoutResult(BookData.CheckoutResult result)
+    {
         switch (result)
         {
             case BookData.CheckoutResult.Success:
@@ -81,5 +113,5 @@ class BookCheckout
                 System.Console.WriteLine("> This Book Is Already Checked Out.\n");
                 break;
         }
-    }
+    } 
 }

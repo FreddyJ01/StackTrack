@@ -28,14 +28,62 @@ class BookData
         }
         return books;
     }
-
-    public enum CheckoutResult
+    public static List<Book> QueryBooksByGenre(string genre)
     {
-        Success,
-        NotFound,
-        AlreadyCheckedOut
-    } 
+        List<Book> books = new List<Book>();
+        using var connection = new SqliteConnection(DatabaseHelper.connectionString);
+        connection.Open();
+        var command = connection.CreateCommand();
+        command.CommandText =
+        @"
+        SELECT BookID, BookTitle, BookAuthor, BookGenre, CheckedOutByID, CheckedOutAt FROM Books WHERE LOWER(BookGenre) = LOWER($genre)
+        ";
+        command.Parameters.AddWithValue("$genre", genre);
+        using var reader = command.ExecuteReader();
 
+        while (reader.Read())
+        {
+            books.Add(new Book
+            {
+                BookID = reader.GetString(0),
+                BookTitle = reader.GetString(1),
+                BookAuthor = reader.GetString(2),
+                BookGenre = reader.GetString(3),
+                CheckedOutByID = reader.IsDBNull(4) ? string.Empty : reader.GetString(4),
+                CheckedOutAt = reader.IsDBNull(5) ? null : reader.GetDateTime(5)
+            });
+        }
+
+        return books;
+    }
+    public static List<Book> QueryBooksByAuthor(string author)
+    {
+        List<Book> books = new List<Book>();
+        using var connection = new SqliteConnection(DatabaseHelper.connectionString);
+        connection.Open();
+        var command = connection.CreateCommand();
+        command.CommandText =
+        @"
+        SELECT BookID, BookTitle, BookAuthor, BookGenre, CheckedOutByID, CheckedOutAt FROM Books WHERE LOWER(BookAuthor) = LOWER($author)
+        ";
+        command.Parameters.AddWithValue("$author", author);
+        using var reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            books.Add(new Book
+            {
+                BookID = reader.GetString(0),
+                BookTitle = reader.GetString(1),
+                BookAuthor = reader.GetString(2),
+                BookGenre = reader.GetString(3),
+                CheckedOutByID = reader.IsDBNull(4) ? string.Empty : reader.GetString(4),
+                CheckedOutAt = reader.IsDBNull(5) ? null : reader.GetDateTime(5)
+            });
+        }
+
+        return books;
+    }
     public static CheckoutResult TryCheckoutBook(string bookTitle)
     {
         using var connection = new SqliteConnection(DatabaseHelper.connectionString);
@@ -80,14 +128,10 @@ class BookData
         updateCommand.ExecuteNonQuery();
         return CheckoutResult.Success;
     }
-
-    public static void QueryBooksByGenre(string genre)
+    public enum CheckoutResult
     {
-
-    }
-
-    public static void QueryBooksByAuthor(string author)
-    {
-
-    }
+        Success,
+        NotFound,
+        AlreadyCheckedOut
+    } 
 }
