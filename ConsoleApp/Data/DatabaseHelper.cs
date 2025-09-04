@@ -4,17 +4,18 @@ namespace StackTrack.ConsoleApp.Data;
 public static class DatabaseHelper
 {
     public static string connectionString = "Data Source=/Users/freddy/Desktop/PARA/1Projects/Code/StackTrack/ConsoleApp/Data/StackTrack.db";
-    public static void PushStart()
+    
+    public static void InitializeDbTables()
     {
         InitializeUsers();
         InitializeBooks();
     }
 
-    // Creates user table in our db if it doesn't already exist
     public static void InitializeUsers()
     {
         using var connection = new SqliteConnection(connectionString);
         connection.Open();
+
         var command = connection.CreateCommand();
         command.CommandText =
         @"
@@ -24,7 +25,8 @@ public static class DatabaseHelper
             Password TEXT NOT NULL,
             Balance REAL NOT NULL
         );
-    ";
+        ";
+
         command.ExecuteNonQuery();
     }
 
@@ -32,6 +34,7 @@ public static class DatabaseHelper
     {
         using var connection = new SqliteConnection(connectionString);
         connection.Open();
+
         var command = connection.CreateCommand();
         command.CommandText =
         @"
@@ -43,7 +46,8 @@ public static class DatabaseHelper
             CheckedOutByID TEXT,
             CheckedOutAt DATETIME
         );
-    ";
+        ";
+
         command.ExecuteNonQuery();
     }
 }

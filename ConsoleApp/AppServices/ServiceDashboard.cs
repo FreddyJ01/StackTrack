@@ -35,15 +35,15 @@ class ServiceDashboard
                 break;
             case 2:
                 Console.Clear();
-                BookReturn.BookReturnInterface();
+                BookReturn.Interface();
                 break;
             case 3:
                 Console.Clear();
-                ViewStack.PrintUserStack();
+                ViewStack.Interface();
                 break;
             case 4:
                 Console.Clear();
-                BalanceView.BalanceViewInterface();
+                BalanceView.Interface();
                 break;
             case 5:
                 Console.Clear();

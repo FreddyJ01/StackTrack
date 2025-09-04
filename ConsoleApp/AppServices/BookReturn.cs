@@ -1,90 +1,110 @@
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.VisualBasic;
-// using StackTrack.ConsoleApp.UserServices;
+using StackTrack.ConsoleApp.AccountServices;
+using StackTrack.ConsoleApp.Data;
+using StackTrack.ConsoleApp.Models;
 
 namespace StackTrack.ConsoleApp.AppServices;
 
 class BookReturn
 {
-    public static string? userBookSelection;
-    public static bool exitStatement;
-    public static bool bookInUserStack;
-    public static DateTime whenUserCheckedOut;
-    public static TimeSpan userPosession;
+    public static double lateFeeMultiplier = 10.0;
+    public static double timeBeforeLate = 10.0;
 
-    public static void BookReturnInterface()
+    public static void Interface()
     {
-        // 1. Create a temporary variable for holding the users book stack
-        // var userStack = UserCreation.userDatabase[0].userBookStack;
-
-        // 2. Display current stack to user
-        System.Console.WriteLine("Current User Stack:");
-        // foreach (var pair in userStack)
-        {
-            // System.Console.WriteLine($"{pair.Key}, {pair.Value}");
-        }
-
-        // 3. Prompt the user which book they would like to return
-        System.Console.WriteLine("--");
+        ViewStack.DisplayUserStack();
         System.Console.Write("Return Selection > ");
-
-        // 4. Take user input
-        userBookSelection = Console.ReadLine();
-
-        // 5. Passes user selection to BookReturnLogic
-        BookReturnLogic(userBookSelection);
+        BookReturnLogic(Console.ReadLine() ?? string.Empty);
     }
 
-    public static void BookReturnLogic(string userBookSelection)
+    public static void BookReturnLogic(string bookTitle)
     {
-        // 1. Ensure the selected book is in the current users stack
-        // bookInUserStack = UserCreation.userDatabase[0].userBookStack.ContainsKey(userBookSelection);
+        var (status, fee) = LateFeeCalculator(bookTitle);
 
-        // 2. Alert the user they have not checked out the book if the book is not in their stack
-        if (!bookInUserStack)
+        switch (status)
         {
-            Console.Clear();
-            System.Console.WriteLine($"> Return Failed - Invalid Selection\n");
-            return;
+            case -1:
+                BookNotFound();
+                break;
+            case 0:
+                ReturnWithoutFee(bookTitle);
+                break;
+            case 1:
+                ReturnWithFee(bookTitle, fee);
+                break;
         }
+    }
 
-        // 3. Determine how long the user had the book checked out for to handle any late fees (10 Seconds For Demo)
+    public static void BookNotFound()
+    {
+        Console.Clear();
+        System.Console.WriteLine("> Invalid Selection\n");
+        return;
+    }
 
-        // Pulls the time the user checked the book out
-        // whenUserCheckedOut = UserCreation.userDatabase[0].userBookStack[userBookSelection];
+    public static void ReturnWithoutFee(string bookTitle)
+    {
+        Console.Clear();
+        System.Console.WriteLine($"> Thank you for returning {bookTitle} on time!\n");
 
-        // Determines how long the user had the book checked out
-        userPosession = DateTime.Now - whenUserCheckedOut;
+        var actionResult = BookData.TryReturnBook(bookTitle);
 
-        // Handles Late Fees (10 Seconds)
-        if (userPosession.TotalSeconds >= 10)
+        if (actionResult == BookData.ActionResult.Failure)
         {
-            // Adds userBalance Total
-            // UserCreation.userDatabase[0].userBalance += (userPosession.TotalSeconds - 10) * 10;
-
-            // Informs user they have had the book too long
             Console.Clear();
-
-            System.Console.WriteLine($"> You Had \"{userBookSelection}\" For {(userPosession.TotalSeconds - 10):f0} Seconds Past Your Return Time.");
-            System.Console.WriteLine($"> Accrued Balance On \"{userBookSelection}\": ${((userPosession.TotalSeconds - 10) * 10):f2}");
-            // System.Console.WriteLine($"> Total Balance: ${(UserCreation.userDatabase[0].userBalance):f2}\n");
-
-            // Removes the book from the users stack
-            // UserCreation.userDatabase[0].userBookStack.Remove(userBookSelection);
-
-            // Returns user to ServiceDashboard
-            return;
+            System.Console.WriteLine($"> You don't have {bookTitle} checked out.\n");
+        }
+        else if (actionResult == BookData.ActionResult.InvalidSelection)
+        {
+            Console.Clear();
+            System.Console.WriteLine("> Invalid Selection.\n");
         }
         else
         {
-            // Thanks the user for returning the book on time
-            Console.Clear();
-            System.Console.WriteLine($"> Return Succesful - {userBookSelection} returned on time.\n");
-
-            // Removes the book from the users stack
-            // UserCreation.userDatabase[0].userBookStack.Remove(userBookSelection);
-
             return;
+        }
+    }
+
+    public static void ReturnWithFee(string bookTitle, double fee)
+    {
+        Console.Clear();
+        System.Console.WriteLine($"> Thank you for returning {bookTitle}, You've Accrued {fee:C} in late fees.");
+        System.Console.WriteLine($"> This bring your total balance to {UserData.QueryUserField("Balance", "Id", UserIdentification.currentUserID ?? ""):C}\n");
+
+        var actionResult = BookData.TryReturnBook(bookTitle);
+
+        if (actionResult == BookData.ActionResult.Failure)
+        {
+            Console.Clear();
+            System.Console.WriteLine($"> You don't have {bookTitle} checked out.\n");
+        }
+        else if (actionResult == BookData.ActionResult.InvalidSelection)
+        {
+            Console.Clear();
+            System.Console.WriteLine("> Invalid Selection.\n");
+        }
+        else
+        {
+            return;
+        }
+    }
+
+    public static (int status, double fee) LateFeeCalculator(string bookTitle)
+    {
+        List<Book> books = BookData.QueryBooksByTitle(bookTitle);
+        if (books == null || books.Count == 0 || books[0].CheckedOutAt == null)
+        { return (-1, 0); }
+
+        TimeSpan userPosession = DateTime.Now - books[0].CheckedOutAt.Value;
+        double secondsLate = userPosession.TotalSeconds - timeBeforeLate;
+
+        if (secondsLate > 0)
+        {
+            UserData.UpdateUserBalance(secondsLate * lateFeeMultiplier);
+            return (1, secondsLate * lateFeeMultiplier);
+        }
+        else
+        {
+            return (0, 0);
         }
     }
 }

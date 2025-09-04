@@ -1,55 +1,50 @@
+using StackTrack.ConsoleApp.AccountServices;
+using StackTrack.ConsoleApp.Data;
+
 namespace StackTrack.ConsoleApp.AppServices;
 
 class BalanceView
 {
-    public static string? userSelection;
-    public static double userPayment;
-    public static bool validPayment;
-
-    public static void BalanceViewInterface()
+    public static void Interface()
     {
-        // 1. Display the users current balance to them
-        // System.Console.WriteLine($"Current User Balance: \n${(UserCreation.userDatabase[0].userBalance):f2}");
+        Console.Clear();
+        DisplayUserBalance(GetUserBalance());
 
-        // 2. Asks the user if they would like to make a payment
-        System.Console.WriteLine("\nWould you like to make a payment?");
-        System.Console.WriteLine("--");
-        System.Console.Write("Selection > ");
-
-        // 3. Takes user Input and passes it to interface logic
-        BalanceViewLogic(Console.ReadLine());
-
-    }
-
-    public static void BalanceViewLogic(string userSelection)
-    {
-        switch (userSelection)
+        switch (Console.ReadLine().ToLower().Trim())
         {
             case "yes":
-                Console.Clear();
-                BalancePay();
+                Payment();
                 break;
             case "no":
                 Console.Clear();
-                return;
+                break;
             default:
                 Console.Clear();
-                System.Console.WriteLine("> Invalid Selection\n");
-                return;
+                System.Console.WriteLine("> Invalid Selection.\n");
+                break;
         }
     }
 
-    public static void BalancePay()
+    public static double GetUserBalance()
     {
-        // Ask the user how much they would like to pay
-        // System.Console.WriteLine($"Current Total Balance: \n${UserCreation.userDatabase[0].userBalance}");
+        double.TryParse(UserData.QueryUserField("Balance", "Id", UserIdentification.currentUserID ?? ""), out double userBalance);
 
-        System.Console.WriteLine("\nHow much would you like to pay:");
+        return userBalance;
+    }
+
+    public static void DisplayUserBalance(double userBalance)
+    {
+        System.Console.WriteLine("Current Balance:");
+        System.Console.WriteLine($"{userBalance:C}\n");
+        System.Console.WriteLine("Would you like to make a payment?");
         System.Console.WriteLine("--");
-        System.Console.Write("Amount > ");
+        System.Console.Write("Selection > ");
+    }
 
-        // Take the users input
-        validPayment = double.TryParse(Console.ReadLine(), out userPayment);
+    public static void Payment()
+    {
+        System.Console.Write("Payment Amount > ");
+        bool validPayment = double.TryParse(Console.ReadLine(), out double userPayment);
 
         if (!validPayment)
         {
@@ -58,24 +53,17 @@ class BalanceView
             return;
         }
 
-        // if (userPayment > UserCreation.userDatabase[0].userBalance)
+        if (userPayment > GetUserBalance())
         {
             Console.Clear();
             System.Console.WriteLine("> Payment Failed - Payment Exceeds Current Balance\n");
             return;
         }
 
-        // Subtract their input from their balance
-        // UserCreation.userDatabase[0].userBalance -= userPayment;
-
+        UserData.UpdateUserBalance(-userPayment);
         Console.Clear();
-
-        // Display the users new balance and thank them for their payment.
-        System.Console.WriteLine($"> Payment Of ${userPayment} Was Successful");
-
-        // System.Console.WriteLine($"> New Current Balance: ${UserCreation.userDatabase[0].userBalance}\n");
-
-        // return user to servicedashboard
+        System.Console.WriteLine($"> Payment of {userPayment:C} Successful.");
+        System.Console.WriteLine($"> New Balance: {GetUserBalance():C}\n");
         return;
     }
 }

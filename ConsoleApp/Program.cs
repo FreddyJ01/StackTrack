@@ -7,7 +7,8 @@ public class Program
 {
     static void Main(string[] Args)
     {
-        DatabaseHelper.PushStart();
+        DatabaseHelper.InitializeDbTables();
+        
         Home.Interface();
         
         Console.Clear();

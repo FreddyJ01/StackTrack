@@ -1,43 +1,27 @@
-// using StackTrack.ConsoleApp.UserServices;
+using StackTrack.ConsoleApp.AccountServices;
+using StackTrack.ConsoleApp.Data;
+using StackTrack.ConsoleApp.Models;
+
 namespace StackTrack.ConsoleApp.AppServices;
 
 class ViewStack
 {
-    public static void PrintUserStack()
+    public static void Interface()
     {
-        // var userStack = UserCreation.userDatabase[0].userBookStack;
-
-        // 1. Interface Header
-        System.Console.WriteLine("Current User Stack:");
-
-        // 2. Prints all books in current users book stack
-        // foreach (var pair in userStack)
-        {
-            // System.Console.WriteLine($"{pair.Key}, {pair.Value}");
-        }
-
-        // 3. Allows user to decide to make a return
-        System.Console.WriteLine("--");
-        System.Console.WriteLine("\nWould you like to make a return?");
-        System.Console.Write("Selection > ");
-        ViewStackLogic(Console.ReadLine());
+        DisplayUserStack();
+        Console.ReadLine();
+        Console.Clear();
     }
-
-    public static void ViewStackLogic(string userInput)
+    
+    public static void DisplayUserStack()
     {
-        switch (userInput.ToLower().Trim())
+        List<Book> books = BookData.QueryBooksByCheckedOutByID(UserIdentification.currentUserID ?? string.Empty);
+
+        System.Console.WriteLine("Current User Stack:");
+        foreach (var book in books)
         {
-            case "yes":
-                Console.Clear();
-                BookReturn.BookReturnInterface();
-                break;
-            case "no":
-                Console.Clear();
-                return;
-            default:
-                Console.Clear();
-                System.Console.WriteLine("> Invalid Selection\n");
-                return;
+            System.Console.WriteLine($"{book.BookTitle}, By {book.BookAuthor} | {book.CheckedOutAt}");
         }
+        System.Console.WriteLine("--");
     }
 }
