@@ -96,19 +96,19 @@ class BookCheckout
         System.Console.Write("Selection > ");
     }
 
-    public static void CheckoutResult(BookData.CheckoutResult result)
+    public static void CheckoutResult(BookData.ActionResult result)
     {
         switch (result)
         {
-            case BookData.CheckoutResult.Success:
+            case BookData.ActionResult.Success:
                 Console.Clear();
                 System.Console.WriteLine("> Book Successfully Checked Out!\n");
                 break;
-            case BookData.CheckoutResult.NotFound:
+            case BookData.ActionResult.InvalidSelection:
                 Console.Clear();
                 System.Console.WriteLine("> Invalid Selection.\n");
                 break;
-            case BookData.CheckoutResult.AlreadyCheckedOut:
+            case BookData.ActionResult.Failure:
                 Console.Clear();
                 System.Console.WriteLine("> This Book Is Already Checked Out.\n");
                 break;

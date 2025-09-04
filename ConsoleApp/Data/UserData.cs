@@ -1,4 +1,5 @@
 using Microsoft.Data.Sqlite;
+using StackTrack.ConsoleApp.AccountServices;
 namespace StackTrack.ConsoleApp.Data;
 
 public class UserData
@@ -60,6 +61,28 @@ public class UserData
         }
     }
 
+    public static string? QueryUserField(string field, string column, string value)
+    {
+        using var connection = new SqliteConnection(DatabaseHelper.connectionString);
+        connection.Open();
+        var command = connection.CreateCommand();
+        command.CommandText =
+        @$"
+        SELECT {field} FROM Users WHERE {column} = $value LIMIT 1;
+        ";
+        command.Parameters.AddWithValue("$value", value);
+        using var reader = command.ExecuteReader();
+
+        if (reader.Read())
+        {
+            return reader.GetString(0);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     public static bool VerifyUniqueUsername(string username)
     {
         using var connection = new SqliteConnection(DatabaseHelper.connectionString);
@@ -88,7 +111,7 @@ public class UserData
         command.Parameters.AddWithValue("$balance", balance);
         command.ExecuteNonQuery();
     }
-    
+
     public static void DeleteUserByNameAndPassword(string name, string password)
     {
         using var connection = new SqliteConnection(DatabaseHelper.connectionString);
@@ -101,6 +124,25 @@ public class UserData
         ";
         command.Parameters.AddWithValue("$name", name);
         command.Parameters.AddWithValue("$password", password);
+        command.ExecuteNonQuery();
+    }
+
+    public static void UpdateUserBalance(double accruedBalance)
+    {
+        using var connection = new SqliteConnection(DatabaseHelper.connectionString);
+        connection.Open();
+
+        var command = connection.CreateCommand();
+        command.CommandText =
+        @"
+        UPDATE Users
+        SET Balance = Balance + $accruedBalance 
+        WHERE Id = $id
+        ;";
+        
+        command.Parameters.AddWithValue("$id", UserIdentification.currentUserID);
+        command.Parameters.AddWithValue("$accruedBalance", accruedBalance);
+
         command.ExecuteNonQuery();
     }
 }
