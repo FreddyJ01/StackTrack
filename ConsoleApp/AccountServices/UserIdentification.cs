@@ -1,6 +1,6 @@
 using StackTrack.ConsoleApp.Data;
 using StackTrack.ConsoleApp.AdminServices;
-using StackTrack.ConsoleApp.Menus;
+using StackTrack.ConsoleApp.UserServices;
 
 namespace StackTrack.ConsoleApp.AccountServices;
 
@@ -37,7 +37,7 @@ class UserIdentification
         if (currentUserID == adminID)
         {
             Console.Clear();
-            AdminServiceDashboard.AdminServiceDashboardDisplay();
+            AdminServiceDashboard.Interface();
         }
         else
         {
@@ -48,7 +48,7 @@ class UserIdentification
 
     public static bool Identification(string usernameAttempt)
     {
-        currentUserID = UserData.QueryIdByUsername(usernameAttempt);
+        currentUserID = UserData.QueryUserByFilter("Name",usernameAttempt)[0].userID;
 
         if (currentUserID == null)
         {
@@ -62,7 +62,7 @@ class UserIdentification
 
     public static bool Authentication(string passwordAttempt)
     {
-        passwordIsValid = passwordAttempt == "" ? false : UserData.QueryPasswordById(currentUserID) == passwordAttempt ? true : false;
+        passwordIsValid = passwordAttempt == "" ? false : UserData.QueryUserByFilter("Password",currentUserID)[0].userPassword == passwordAttempt ? true : false;
 
         if (passwordIsValid)
         {

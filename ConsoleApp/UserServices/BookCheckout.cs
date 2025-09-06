@@ -1,6 +1,6 @@
 using StackTrack.ConsoleApp.Data;
 using StackTrack.ConsoleApp.Models;
-namespace StackTrack.ConsoleApp.AppServices;
+namespace StackTrack.ConsoleApp.UserServices;
 
 class BookCheckout
 {
@@ -54,7 +54,7 @@ class BookCheckout
         System.Console.Write("Genre: ");
         string genre = Console.ReadLine()?.ToString().ToLower().Trim() ?? "";
 
-        List<Book> books = BookData.QueryBooksByGenre(genre);
+        List<Book> books = BookData.QueryBooksByFilter("BookGenre", genre);
 
         Console.Clear();
         System.Console.WriteLine($"{char.ToUpper(genre[0]) + genre.Substring(1)} Books:");
@@ -70,7 +70,7 @@ class BookCheckout
         System.Console.Write("Author: ");
         string author = Console.ReadLine()?.ToString().ToLower().Trim() ?? "";
 
-        List<Book> books = BookData.QueryBooksByAuthor(author);
+        List<Book> books = BookData.QueryBooksByFilter("BookAuthor", author);
 
         Console.Clear();
         System.Console.WriteLine($"Books By {char.ToUpper(author[0]) + author.Substring(1)}:");
@@ -87,7 +87,7 @@ class BookCheckout
 
             if (!String.IsNullOrEmpty(book.CheckedOutByID))
             {
-                output += $" | {UserData.QueryUsernameById(book.CheckedOutByID)}, {book.CheckedOutAt:MMM-dd-yyyy @ hh:mm tt}";
+                output += $" | {UserData.QueryUserByFilter("Id",book.CheckedOutByID)[0].userName}, {book.CheckedOutAt:MMM-dd-yyyy @ hh:mm tt}";
             }
 
             System.Console.WriteLine(output);

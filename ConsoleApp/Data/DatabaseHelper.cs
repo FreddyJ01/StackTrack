@@ -23,7 +23,8 @@ public static class DatabaseHelper
             Id TEXT NOT NULL PRIMARY KEY,
             Name TEXT NOT NULL,
             Password TEXT NOT NULL,
-            Balance REAL NOT NULL
+            Balance REAL NOT NULL,
+            Access TEXT NOT NULL
         );
         ";
 

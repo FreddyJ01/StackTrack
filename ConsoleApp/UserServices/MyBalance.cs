@@ -1,9 +1,9 @@
 using StackTrack.ConsoleApp.AccountServices;
 using StackTrack.ConsoleApp.Data;
 
-namespace StackTrack.ConsoleApp.AppServices;
+namespace StackTrack.ConsoleApp.UserServices;
 
-class BalanceView
+class MyBalance
 {
     public static void Interface()
     {
@@ -27,7 +27,7 @@ class BalanceView
 
     public static double GetUserBalance()
     {
-        double.TryParse(UserData.QueryUserField("Balance", "Id", UserIdentification.currentUserID ?? ""), out double userBalance);
+        double userBalance = UserData.QueryUserByFilter("Id", UserIdentification.currentUserID ?? "")[0].userBalance;
 
         return userBalance;
     }

@@ -1,7 +1,4 @@
-using System.Security.Cryptography.X509Certificates;
-using StackTrack.ConsoleApp.AppServices;
-
-namespace StackTrack.ConsoleApp.Menus;
+namespace StackTrack.ConsoleApp.UserServices;
 
 class ServiceDashboard
 {
@@ -39,15 +36,15 @@ class ServiceDashboard
                 break;
             case 3:
                 Console.Clear();
-                ViewStack.Interface();
+                MyStack.Interface();
                 break;
             case 4:
                 Console.Clear();
-                BalanceView.Interface();
+                MyBalance.Interface();
                 break;
             case 5:
                 Console.Clear();
-                TermsConditions.TermsConditionsDisplay();
+                TermsAndConditions.Interface();
                 break;
             case 6:
                 Console.Clear();

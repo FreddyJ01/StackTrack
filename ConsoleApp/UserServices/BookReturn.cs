@@ -2,7 +2,7 @@ using StackTrack.ConsoleApp.AccountServices;
 using StackTrack.ConsoleApp.Data;
 using StackTrack.ConsoleApp.Models;
 
-namespace StackTrack.ConsoleApp.AppServices;
+namespace StackTrack.ConsoleApp.UserServices;
 
 class BookReturn
 {
@@ -11,7 +11,7 @@ class BookReturn
 
     public static void Interface()
     {
-        ViewStack.DisplayUserStack();
+        MyStack.DisplayUserStack();
         System.Console.Write("Return Selection > ");
         BookReturnLogic(Console.ReadLine() ?? string.Empty);
     }
@@ -68,7 +68,7 @@ class BookReturn
     {
         Console.Clear();
         System.Console.WriteLine($"> Thank you for returning {bookTitle}, You've Accrued {fee:C} in late fees.");
-        System.Console.WriteLine($"> This bring your total balance to {UserData.QueryUserField("Balance", "Id", UserIdentification.currentUserID ?? ""):C}\n");
+        System.Console.WriteLine($"> This bring your total balance to {UserData.QueryUserByFilter("Id", UserIdentification.currentUserID ?? "")[0].userBalance:C}\n");
 
         var actionResult = BookData.TryReturnBook(bookTitle);
 
@@ -90,7 +90,7 @@ class BookReturn
 
     public static (int status, double fee) LateFeeCalculator(string bookTitle)
     {
-        List<Book> books = BookData.QueryBooksByTitle(bookTitle);
+        List<Book> books = BookData.QueryBooksByFilter("BookTitle", bookTitle);
         if (books == null || books.Count == 0 || books[0].CheckedOutAt == null)
         { return (-1, 0); }
 

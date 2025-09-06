@@ -1,8 +1,8 @@
-namespace StackTrack.ConsoleApp.AppServices;
+namespace StackTrack.ConsoleApp.UserServices;
 
-class TermsConditions
+class TermsAndConditions
 {
-    public static void TermsConditionsDisplay()
+    public static void Interface()
     {
         // Display Terms and Conditions
         System.Console.WriteLine("Terms and Conditions");

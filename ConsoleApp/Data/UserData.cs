@@ -1,86 +1,69 @@
 using Microsoft.Data.Sqlite;
 using StackTrack.ConsoleApp.AccountServices;
+using StackTrack.ConsoleApp.Models;
+
 namespace StackTrack.ConsoleApp.Data;
 
 public class UserData
 {
-    public static string? QueryIdByUsername(string usernameAttempt)
+    public static List<User> QueryAllUsers()
     {
+        List<User> users = new List<User>();
+
         using var connection = new SqliteConnection(DatabaseHelper.connectionString);
         connection.Open();
-        var command = connection.CreateCommand();
-        command.CommandText = "SELECT Id FROM Users WHERE Name = $name LIMIT 1;";
-        command.Parameters.AddWithValue("$name", usernameAttempt);
-        using var reader = command.ExecuteReader();
 
-        if (reader.Read())
+        var command = connection.CreateCommand();
+        command.CommandText =
+        @"
+        SELECT Id, Name, Password, Balance, Access
+        FROM Users
+        ";
+
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
         {
-            return reader.GetString(0);
+            users.Add(new User
+            {
+                userID = reader.GetString(0),
+                userName = reader.GetString(1),
+                userPassword = reader.GetString(2),
+                userBalance = reader.GetDouble(3),
+                userAccess = reader.GetString(4)
+            });
         }
-        else
-        {
-            return null;
-        }
+        return users;
     }
 
-    public static string? QueryPasswordById(string userID)
+    public static List<User> QueryUserByFilter(string column, string filter)
     {
+        List<User> users = new List<User>();
         using var connection = new SqliteConnection(DatabaseHelper.connectionString);
         connection.Open();
-        var command = connection.CreateCommand();
-        command.CommandText = "SELECT Password FROM Users WHERE Id = $id LIMIT 1;";
-        command.Parameters.AddWithValue("$id", userID);
-        using var reader = command.ExecuteReader();
 
-        if (reader.Read())
-        {
-            return reader.GetString(0);
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    public static string QueryUsernameById(string id)
-    {
-        using var connection = new SqliteConnection(DatabaseHelper.connectionString);
-        connection.Open();
-        var command = connection.CreateCommand();
-        command.CommandText = "SELECT Name FROM Users WHERE Id = $id LIMIT 1;";
-        command.Parameters.AddWithValue("$id", id);
-        using var reader = command.ExecuteReader();
-
-        if (reader.Read())
-        {
-            return reader.GetString(0);
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    public static string? QueryUserField(string field, string column, string value)
-    {
-        using var connection = new SqliteConnection(DatabaseHelper.connectionString);
-        connection.Open();
         var command = connection.CreateCommand();
         command.CommandText =
         @$"
-        SELECT {field} FROM Users WHERE {column} = $value LIMIT 1;
+        SELECT Id, Name, Password, Balance, Access
+        FROM Users 
+        WHERE {column} = $filter LIMIT 1;
         ";
-        command.Parameters.AddWithValue("$value", value);
-        using var reader = command.ExecuteReader();
+        command.Parameters.AddWithValue("$filter", filter);
 
-        if (reader.Read())
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
         {
-            return reader.GetString(0);
+            users.Add(new User
+            {
+                userID = reader.GetString(0),
+                userName = reader.GetString(1),
+                userPassword = reader.GetString(2),
+                userBalance = reader.GetDouble(3),
+                userAccess = reader.GetString(4)
+            });
         }
-        else
-        {
-            return null;
-        }
+
+        return users;
     }
 
     public static bool VerifyUniqueUsername(string username)
@@ -98,17 +81,19 @@ public class UserData
     {
         using var connection = new SqliteConnection(DatabaseHelper.connectionString);
         connection.Open();
+
         var command = connection.CreateCommand();
         command.CommandText =
         @"
-        INSERT INTO Users (Id, Name, Password, Balance)
-        VALUES ($id, $name, $password, $balance)
+        INSERT INTO Users (Id, Name, Password, Balance, Access)
+        VALUES ($id, $name, $password, $balance, $access)
         ";
-
         command.Parameters.AddWithValue("$id", id);
         command.Parameters.AddWithValue("$name", name);
         command.Parameters.AddWithValue("$password", password);
         command.Parameters.AddWithValue("$balance", balance);
+        command.Parameters.AddWithValue("$access", "User");
+
         command.ExecuteNonQuery();
     }
 
@@ -116,6 +101,7 @@ public class UserData
     {
         using var connection = new SqliteConnection(DatabaseHelper.connectionString);
         connection.Open();
+
         var command = connection.CreateCommand();
         command.CommandText =
         @"
@@ -124,6 +110,7 @@ public class UserData
         ";
         command.Parameters.AddWithValue("$name", name);
         command.Parameters.AddWithValue("$password", password);
+        
         command.ExecuteNonQuery();
     }
 

@@ -1,5 +1,5 @@
 using StackTrack.ConsoleApp.AccountServices;
-namespace StackTrack.ConsoleApp.Menus;
+namespace StackTrack.ConsoleApp.UserServices;
 
 class Home
 {
