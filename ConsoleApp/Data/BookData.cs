@@ -1,6 +1,7 @@
 using Microsoft.Data.Sqlite;
 using StackTrack.ConsoleApp.AccountServices;
 using StackTrack.ConsoleApp.Models;
+
 namespace StackTrack.ConsoleApp.Data;
 
 class BookData
@@ -8,12 +9,18 @@ class BookData
     public static List<Book> QueryAllBooks()
     {
         List<Book> books = new List<Book>();
+
         using var connection = new SqliteConnection(DatabaseHelper.connectionString);
         connection.Open();
-        var command = connection.CreateCommand();
-        command.CommandText = "SELECT BookID, BookTitle, BookAuthor, BookGenre, CheckedOutByID, CheckedOutAt FROM Books";
-        using var reader = command.ExecuteReader();
 
+        var command = connection.CreateCommand();
+        command.CommandText =
+        @"
+        SELECT BookID, BookTitle, BookAuthor, BookGenre, CheckedOutByID, CheckedOutAt 
+        FROM Books
+        ";
+
+        using var reader = command.ExecuteReader();
         while (reader.Read())
         {
             books.Add(new Book
@@ -29,19 +36,23 @@ class BookData
         return books;
     }
 
-    public static List<Book> QueryBooksByGenre(string genre)
+    public static List<Book> QueryBooksByFilter(string column, string filter)
     {
         List<Book> books = new List<Book>();
+
         using var connection = new SqliteConnection(DatabaseHelper.connectionString);
         connection.Open();
+
         var command = connection.CreateCommand();
         command.CommandText =
-        @"
-        SELECT BookID, BookTitle, BookAuthor, BookGenre, CheckedOutByID, CheckedOutAt FROM Books WHERE LOWER(BookGenre) = LOWER($genre)
+        @$"
+        SELECT BookID, BookTitle, BookAuthor, BookGenre, CheckedOutByID, CheckedOutAt 
+        FROM Books 
+        WHERE LOWER({column}) = LOWER($filter)
         ";
-        command.Parameters.AddWithValue("$genre", genre);
-        using var reader = command.ExecuteReader();
+        command.Parameters.AddWithValue("$filter", filter);
 
+        using var reader = command.ExecuteReader();
         while (reader.Read())
         {
             books.Add(new Book
@@ -58,7 +69,7 @@ class BookData
         return books;
     }
 
-    public static List<Book> QueryBooksByAuthor(string author)
+    public static List<Book> QueryBooksByCheckedOutByID(string currentUserID)
     {
         List<Book> books = new List<Book>();
         using var connection = new SqliteConnection(DatabaseHelper.connectionString);
@@ -66,9 +77,9 @@ class BookData
         var command = connection.CreateCommand();
         command.CommandText =
         @"
-        SELECT BookID, BookTitle, BookAuthor, BookGenre, CheckedOutByID, CheckedOutAt FROM Books WHERE LOWER(BookAuthor) = LOWER($author)
+        SELECT BookID, BookTitle, BookAuthor, BookGenre, CheckedOutByID, CheckedOutAt FROM Books WHERE CheckedOutByID = $currentUserID
         ";
-        command.Parameters.AddWithValue("$author", author);
+        command.Parameters.AddWithValue("$currentUserID", currentUserID);
         using var reader = command.ExecuteReader();
 
         while (reader.Read())
@@ -83,40 +94,7 @@ class BookData
                 CheckedOutAt = reader.IsDBNull(5) ? null : reader.GetDateTime(5)
             });
         }
-
         return books;
-    }
-
-    public static List<Book> QueryBooksByTitle(string title)
-    {
-        List<Book> books = new List<Book>();
-        using var connection = new SqliteConnection(DatabaseHelper.connectionString);
-        connection.Open();
-        var command = connection.CreateCommand();
-        command.CommandText =
-        @"
-        SELECT BookID, BookTitle, BookAuthor, BookGenre, CheckedOutByID, CheckedOutAt FROM Books WHERE BookTitle = $title LIMIT 1
-        ";
-        command.Parameters.AddWithValue("$title", title);
-        using var reader = command.ExecuteReader();
-
-        if (reader.Read())
-        {
-            books.Add(new Book
-            {
-                BookID = reader.GetString(0),
-                BookTitle = reader.GetString(1),
-                BookAuthor = reader.GetString(2),
-                BookGenre = reader.GetString(3),
-                CheckedOutByID = reader.IsDBNull(4) ? string.Empty : reader.GetString(4),
-                CheckedOutAt = reader.IsDBNull(5) ? null : reader.GetDateTime(5)
-            });
-            return books;
-        }
-        else
-        {
-            return null;
-        }
     }
 
     public static ActionResult TryCheckoutBook(string bookTitle)
@@ -164,41 +142,6 @@ class BookData
         return ActionResult.Success;
     }
 
-    public enum ActionResult
-    {
-        Success,
-        InvalidSelection,
-        Failure
-    }
-
-    public static List<Book> QueryBooksByCheckedOutByID(string currentUserID)
-    {
-        List<Book> books = new List<Book>();
-        using var connection = new SqliteConnection(DatabaseHelper.connectionString);
-        connection.Open();
-        var command = connection.CreateCommand();
-        command.CommandText =
-        @"
-        SELECT BookID, BookTitle, BookAuthor, BookGenre, CheckedOutByID, CheckedOutAt FROM Books WHERE CheckedOutByID = $currentUserID
-        ";
-        command.Parameters.AddWithValue("$currentUserID", currentUserID);
-        using var reader = command.ExecuteReader();
-
-        while (reader.Read())
-        {
-            books.Add(new Book
-            {
-                BookID = reader.GetString(0),
-                BookTitle = reader.GetString(1),
-                BookAuthor = reader.GetString(2),
-                BookGenre = reader.GetString(3),
-                CheckedOutByID = reader.IsDBNull(4) ? string.Empty : reader.GetString(4),
-                CheckedOutAt = reader.IsDBNull(5) ? null : reader.GetDateTime(5)
-            });
-        }
-        return books;
-    }
-
     public static ActionResult TryReturnBook (string bookTitle)
     {
         using var connection = new SqliteConnection(DatabaseHelper.connectionString);
@@ -242,5 +185,62 @@ class BookData
 
         updateCommand.ExecuteNonQuery();
         return ActionResult.Success;
+    }
+
+    public static bool TryAddBook(string bookTitle, string bookAuthor, string bookGenre)
+    {
+        using var connection = new SqliteConnection(DatabaseHelper.connectionString);
+        connection.Open();
+
+        var command = connection.CreateCommand();
+        command.CommandText =
+        @"
+        INSERT INTO Books
+        (BookID, BookTitle, BookAuthor, BookGenre)
+        VALUES ($bookID, $bookTitle, $bookAuthor, $bookGenre)
+        ";
+        command.Parameters.AddWithValue("$bookID", Guid.NewGuid().ToString());
+        command.Parameters.AddWithValue("$bookTitle", bookTitle);
+        command.Parameters.AddWithValue("$bookAuthor", bookAuthor);
+        command.Parameters.AddWithValue("$bookGenre", bookGenre);
+
+        if (command.ExecuteNonQuery() > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public static bool TryRemoveBook(string bookTitle)
+    {
+        using var connection = new SqliteConnection(DatabaseHelper.connectionString);
+        connection.Open();
+
+        var command = connection.CreateCommand();
+        command.CommandText =
+        @"
+        DELETE FROM Books
+        WHERE LOWER(BookTitle) = LOWER($bookTitle)
+        ";
+        command.Parameters.AddWithValue("$bookTitle", bookTitle);
+
+        if (command.ExecuteNonQuery() > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public enum ActionResult
+    {
+        Success,
+        InvalidSelection,
+        Failure
     }
 }

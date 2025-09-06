@@ -2,9 +2,9 @@ using StackTrack.ConsoleApp.AccountServices;
 using StackTrack.ConsoleApp.Data;
 using StackTrack.ConsoleApp.Models;
 
-namespace StackTrack.ConsoleApp.AppServices;
+namespace StackTrack.ConsoleApp.UserServices;
 
-class ViewStack
+class MyStack
 {
     public static void Interface()
     {
