@@ -187,7 +187,7 @@ class BookData
         return ActionResult.Success;
     }
 
-    public static bool TryAddBook(string bookTitle, string bookAuthor, string bookGenre)
+    public static bool TryAddBook(string bookID, string bookTitle, string bookAuthor, string bookGenre)
     {
         using var connection = new SqliteConnection(DatabaseHelper.connectionString);
         connection.Open();
@@ -199,7 +199,7 @@ class BookData
         (BookID, BookTitle, BookAuthor, BookGenre)
         VALUES ($bookID, $bookTitle, $bookAuthor, $bookGenre)
         ";
-        command.Parameters.AddWithValue("$bookID", Guid.NewGuid().ToString());
+        command.Parameters.AddWithValue("$bookID", bookID);
         command.Parameters.AddWithValue("$bookTitle", bookTitle);
         command.Parameters.AddWithValue("$bookAuthor", bookAuthor);
         command.Parameters.AddWithValue("$bookGenre", bookGenre);
@@ -214,7 +214,7 @@ class BookData
         }
     }
 
-    public static bool TryRemoveBook(string bookTitle)
+    public static bool TryRemoveBook(string bookId)
     {
         using var connection = new SqliteConnection(DatabaseHelper.connectionString);
         connection.Open();
@@ -223,9 +223,9 @@ class BookData
         command.CommandText =
         @"
         DELETE FROM Books
-        WHERE LOWER(BookTitle) = LOWER($bookTitle)
+        WHERE LOWER(BookID) = LOWER($bookId)
         ";
-        command.Parameters.AddWithValue("$bookTitle", bookTitle);
+        command.Parameters.AddWithValue("$bookId", bookId);
 
         if (command.ExecuteNonQuery() > 0)
         {

@@ -35,9 +35,8 @@ public class UserData
         return users;
     }
 
-    public static List<User> QueryUserByFilter(string column, string filter)
+    public static User QueryUserByFilter(string column, string filter)
     {
-        List<User> users = new List<User>();
         using var connection = new SqliteConnection(DatabaseHelper.connectionString);
         connection.Open();
 
@@ -51,19 +50,18 @@ public class UserData
         command.Parameters.AddWithValue("$filter", filter);
 
         using var reader = command.ExecuteReader();
-        while (reader.Read())
+        if (reader.Read())
         {
-            users.Add(new User
+            return new User
             {
                 userID = reader.GetString(0),
                 userName = reader.GetString(1),
                 userPassword = reader.GetString(2),
                 userBalance = reader.GetDouble(3),
                 userAccess = reader.GetString(4)
-            });
+            };
         }
-
-        return users;
+            return null;
     }
 
     public static bool VerifyUniqueUsername(string username)

@@ -3,7 +3,7 @@ namespace StackTrack.ConsoleApp.Data;
 
 public static class DatabaseHelper
 {
-    public static string connectionString = "Data Source=/Users/freddy/Desktop/PARA/1Projects/Code/StackTrack/ConsoleApp/Data/StackTrack.db";
+    public static string connectionString = "Data Source=/Users/freddy/Documents/1Projects/GitHub/StackTrack/ConsoleApp/Data/StackTrack.db";
     
     public static void InitializeDbTables()
     {

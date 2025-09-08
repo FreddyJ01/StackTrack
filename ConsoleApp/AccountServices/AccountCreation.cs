@@ -38,7 +38,7 @@ public class AccountCreation
         }
 
         Console.Clear();
-        System.Console.WriteLine($"Welcome {username}! Your Unique ID is {UserData.QueryUserByFilter("Name",username)[0].userID}\n");
+        System.Console.WriteLine($"Welcome {username}! Your Unique ID is {UserData.QueryUserByFilter("Name",username).userID}\n");
         return;
     }
 }
