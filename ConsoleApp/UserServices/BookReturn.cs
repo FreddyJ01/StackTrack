@@ -68,7 +68,7 @@ class BookReturn
     {
         Console.Clear();
         System.Console.WriteLine($"> Thank you for returning {bookTitle}, You've Accrued {fee:C} in late fees.");
-        System.Console.WriteLine($"> This bring your total balance to {UserData.QueryUserByFilter("Id", UserIdentification.currentUserID ?? "")[0].userBalance:C}\n");
+        System.Console.WriteLine($"> This bring your total balance to {UserData.QueryUserByFilter("Id", UserIdentification.currentUserID ?? "").userBalance:C}\n");
 
         var actionResult = BookData.TryReturnBook(bookTitle);
 

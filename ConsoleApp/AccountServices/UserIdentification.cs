@@ -1,6 +1,7 @@
 using StackTrack.ConsoleApp.Data;
 using StackTrack.ConsoleApp.AdminServices;
 using StackTrack.ConsoleApp.UserServices;
+using StackTrack.ConsoleApp.Models;
 
 namespace StackTrack.ConsoleApp.AccountServices;
 
@@ -10,7 +11,7 @@ class UserIdentification
     private static string? passwordAttempt;
     public static string? currentUserID;
     private static bool passwordIsValid;
-    private static string? adminID = "d5784a02-00fb-4c39-b623-7962e3018b0a";
+    private static string? adminID = "e8cd8e23-315f-4d42-9d0b-e3f0eea0f355";
 
     public static void Interface()
     {
@@ -48,9 +49,16 @@ class UserIdentification
 
     public static bool Identification(string usernameAttempt)
     {
-        currentUserID = UserData.QueryUserByFilter("Name",usernameAttempt)[0].userID;
+        User queryUser = UserData.QueryUserByFilter("Name", usernameAttempt);
 
-        if (currentUserID == null)
+        if (queryUser == null)
+        {
+            return false;
+        }
+
+        currentUserID = UserData.QueryUserByFilter("Name",usernameAttempt).userID ?? string.Empty;
+
+        if (string.IsNullOrEmpty(currentUserID))
         {
             return false;
         }
@@ -62,7 +70,7 @@ class UserIdentification
 
     public static bool Authentication(string passwordAttempt)
     {
-        passwordIsValid = passwordAttempt == "" ? false : UserData.QueryUserByFilter("Password",currentUserID)[0].userPassword == passwordAttempt ? true : false;
+        passwordIsValid = passwordAttempt == "" ? false : UserData.QueryUserByFilter("Id",currentUserID).userPassword == passwordAttempt ? true : false;
 
         if (passwordIsValid)
         {

@@ -27,7 +27,7 @@ class MyBalance
 
     public static double GetUserBalance()
     {
-        double userBalance = UserData.QueryUserByFilter("Id", UserIdentification.currentUserID ?? "")[0].userBalance;
+        double userBalance = UserData.QueryUserByFilter("Id", UserIdentification.currentUserID ?? "").userBalance;
 
         return userBalance;
     }

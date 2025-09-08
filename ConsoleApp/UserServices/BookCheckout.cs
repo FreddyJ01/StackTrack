@@ -87,7 +87,7 @@ class BookCheckout
 
             if (!String.IsNullOrEmpty(book.CheckedOutByID))
             {
-                output += $" | {UserData.QueryUserByFilter("Id",book.CheckedOutByID)[0].userName}, {book.CheckedOutAt:MMM-dd-yyyy @ hh:mm tt}";
+                output += $" | {UserData.QueryUserByFilter("Id",book.CheckedOutByID).userName}, {book.CheckedOutAt:MMM-dd-yyyy @ hh:mm tt}";
             }
 
             System.Console.WriteLine(output);
