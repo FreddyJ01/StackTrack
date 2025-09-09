@@ -11,7 +11,7 @@ class UserIdentification
     private static string? passwordAttempt;
     public static string? currentUserID;
     private static bool passwordIsValid;
-    private static string? adminID = "e8cd8e23-315f-4d42-9d0b-e3f0eea0f355";
+    private static string? ownerID = "ceecb710-fe80-4ac5-b925-c69220785188";
 
     public static void Interface()
     {
@@ -35,7 +35,7 @@ class UserIdentification
             return;
         }
 
-        if (currentUserID == adminID)
+        if (currentUserID == ownerID || UserData.QueryUserByFilter("Id", currentUserID).userAccess == "Admin")
         {
             Console.Clear();
             AdminServiceDashboard.Interface();

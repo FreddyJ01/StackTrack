@@ -29,10 +29,12 @@ class AdminServiceDashboard
                 ManageLibrary.Interface();
                 break;
             case 2:
+                Console.Clear();
                 ManageUsers.Interface();
                 break;
             case 3:
-                // ManageTermsAndConditions.Interface();
+                Console.Clear();
+                ManageTermsAndConditions.Interface();
                 break;
             case 4:
                 Console.Clear();
