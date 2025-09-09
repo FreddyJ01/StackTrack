@@ -95,7 +95,57 @@ public class UserData
         command.ExecuteNonQuery();
     }
 
-    public static void DeleteUserByNameAndPassword(string name, string password)
+    public static bool TryUpdateUserAccess(string userID, string access)
+    {
+        using var connection = new SqliteConnection(DatabaseHelper.connectionString);
+        connection.Open();
+
+        var command = connection.CreateCommand();
+        command.CommandText =
+        @"
+        UPDATE Users
+        SET Access = $access
+        WHERE LOWER(Id) = LOWER($id)
+        ";
+        command.Parameters.AddWithValue("$access", access);
+        command.Parameters.AddWithValue("$id", userID);
+
+        if (command.ExecuteNonQuery() > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public static bool TryUpdateUserBalance(string userID, double balance)
+    {
+        using var connection = new SqliteConnection(DatabaseHelper.connectionString);
+        connection.Open();
+
+        var command = connection.CreateCommand();
+        command.CommandText =
+        @"
+        UPDATE Users
+        SET Balance = $balance
+        WHERE LOWER(Id) = LOWER($id)
+        ";
+        command.Parameters.AddWithValue("$balance", balance);
+        command.Parameters.AddWithValue("$id", userID);
+
+        if (command.ExecuteNonQuery() > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public static bool TryDeleteUser(string name, string password)
     {
         using var connection = new SqliteConnection(DatabaseHelper.connectionString);
         connection.Open();
@@ -108,8 +158,16 @@ public class UserData
         ";
         command.Parameters.AddWithValue("$name", name);
         command.Parameters.AddWithValue("$password", password);
-        
-        command.ExecuteNonQuery();
+
+        if (command.ExecuteNonQuery() > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
     }
 
     public static void UpdateUserBalance(double accruedBalance)
