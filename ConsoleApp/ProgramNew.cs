@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,7 +10,7 @@ using StackTrack.ConsoleApp.Models;
 
 namespace StackTrack.ConsoleApp;
 
-class Program
+class ProgramNew
 {
     static async Task Main(string[] args)
     {
@@ -54,7 +54,7 @@ class Program
     {
         using var scope = services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<StackTrackDbContext>();
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<ProgramNew>>();
 
         try
         {
@@ -74,10 +74,21 @@ class Program
                     CreatedAt = DateTime.UtcNow
                 };
 
+                var testBook = new Book
+                {
+                    BookID = Guid.NewGuid().ToString(),
+                    BookTitle = "The Great Gatsby",
+                    BookAuthor = "F. Scott Fitzgerald",
+                    BookGenre = "Classic Literature",
+                    CreatedAt = DateTime.UtcNow
+                };
+
                 context.Users.Add(adminUser);
+                context.Books.Add(testBook);
                 await context.SaveChangesAsync();
                 
-                logger.LogInformation("Default admin user created (username: admin, password: admin123)");
+                logger.LogInformation("Default admin user and sample book created");
+                logger.LogInformation("Login with username: admin, password: admin123");
             }
         }
         catch (Exception ex)

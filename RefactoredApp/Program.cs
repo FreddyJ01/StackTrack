@@ -3,12 +3,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using StackTrack.ConsoleApp.Application;
-using StackTrack.ConsoleApp.Data;
-using StackTrack.ConsoleApp.Infrastructure;
-using StackTrack.ConsoleApp.Models;
+using StackTrack.RefactoredApp.Application;
+using StackTrack.RefactoredApp.Data;
+using StackTrack.RefactoredApp.Infrastructure;
+using StackTrack.RefactoredApp.Models;
 
-namespace StackTrack.ConsoleApp;
+namespace StackTrack.RefactoredApp;
 
 class Program
 {
@@ -74,10 +74,21 @@ class Program
                     CreatedAt = DateTime.UtcNow
                 };
 
+                var testBook = new Book
+                {
+                    BookID = Guid.NewGuid().ToString(),
+                    BookTitle = "The Great Gatsby",
+                    BookAuthor = "F. Scott Fitzgerald",
+                    BookGenre = "Classic Literature",
+                    CreatedAt = DateTime.UtcNow
+                };
+
                 context.Users.Add(adminUser);
+                context.Books.Add(testBook);
                 await context.SaveChangesAsync();
                 
-                logger.LogInformation("Default admin user created (username: admin, password: admin123)");
+                logger.LogInformation("Default admin user and sample book created");
+                logger.LogInformation("Login with username: admin, password: admin123");
             }
         }
         catch (Exception ex)

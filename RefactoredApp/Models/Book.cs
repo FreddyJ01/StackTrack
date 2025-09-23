@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace StackTrack.ConsoleApp.Models;
+namespace StackTrack.RefactoredApp.Models;
 
 public class Book
 {

@@ -8,7 +8,7 @@ class BookData
 {
     public static List<Book> QueryAllBooks()
     {
-        List<Book> books = new List<Book>();
+        var books = new List<Book>();
 
         using var connection = new SqliteConnection(DatabaseHelper.connectionString);
         connection.Open();
