@@ -46,16 +46,23 @@ class ManageLibrary
         }
     }
 
-    static string? PromptUser(string prompt)
+    static string PromptUser(string prompt)
     {
         System.Console.Write(prompt);
-        return Console.ReadLine();
+        return Console.ReadLine() ?? string.Empty;
     }
 
     public static void LibraryInventory()
     {
         List<Book> books = new List<Book>();
-        books = BookData.QueryAllBooks();
+        books = BookData.QueryAllBooks() ?? new List<Book>();
+
+        if (books.Count == 0)
+        {
+            Console.Clear();
+            System.Console.WriteLine("> Invalid Selection.");
+            return;
+        }
 
         foreach (Book book in books)
         {
@@ -104,15 +111,13 @@ class ManageLibrary
 
     public static void EditBook()
     {
-        List<Book> books = new List<Book>();
         string bookId = PromptUser("Book Id > ");
+        List<Book> books = BookData.QueryBooksByFilter("BookID", bookId) ?? new List<Book>();
 
-        books = BookData.QueryBooksByFilter("BookID", bookId) ?? null;
-
-        if (books == null)
+        if (books.Count == 0)
         {
             Console.Clear();
-            System.Console.WriteLine("> Invalid Selection.\n");
+            System.Console.WriteLine("> Invalid Selection.");
             return;
         }
 
